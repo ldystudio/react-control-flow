@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-export interface IfProps<T> {
+export interface ShowProps<T> {
     /** 条件表达式，为真时渲染 children */
-    condition: T;
+    when: T;
     /** 条件为真时渲染的内容 */
     children: ReactNode | ((value: NonNullable<T>) => ReactNode);
     /** 条件为假时渲染的备选内容 */
@@ -14,29 +14,29 @@ export interface IfProps<T> {
  *
  * @example
  * // 基础用法
- * <If condition={isLoggedIn}>
+ * <Show when={isLoggedIn}>
  *   <UserProfile />
- * </If>
+ * </Show>
  *
  * @example
  * // 带 fallback
- * <If condition={isLoggedIn} fallback={<LoginButton />}>
+ * <Show when={isLoggedIn} fallback={<LoginButton />}>
  *   <UserProfile />
- * </If>
+ * </Show>
  *
  * @example
  * // 使用 render props 获取类型安全的值
- * <If condition={user}>
+ * <Show when={user}>
  *   {(user) => <UserProfile name={user.name} />}
- * </If>
+ * </Show>
  */
-export function If<T>({ condition, children, fallback = null }: IfProps<T>): ReactNode {
-    if (!condition) {
+export function Show<T>({ when, children, fallback = null }: ShowProps<T>): ReactNode {
+    if (!when) {
         return fallback;
     }
 
     if (typeof children === "function") {
-        return children(condition as NonNullable<T>);
+        return children(when as NonNullable<T>);
     }
 
     return children;
