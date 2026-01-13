@@ -1,0 +1,56 @@
+{
+    "name": "react-control-flow",
+    "version": "1.0.0",
+    "description": "声明式 React 控制流组件，用于替代 JSX 中的三元表达式和 array.map()",
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "NODE_ENV=production bun run build:esm && bun run build:cjs && bun run build:types",
+        "build:esm": "bun build ./src/index.ts --outdir ./dist --format esm --external react --external 'react/*'",
+        "build:cjs": "bun build ./src/index.ts --outfile ./dist/index.cjs --format cjs --external react --external 'react/*'",
+        "build:types": "tsc -p tsconfig.build.json",
+        "test": "bun test",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "format": "biome format --write .",
+        "prepublishOnly": "bun run build"
+    },
+    "keywords": [
+        "react",
+        "control-flow",
+        "conditional-rendering",
+        "declarative",
+        "jsx"
+    ],
+    "author": "ldystudio",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ldystudio/react-control-flow.git"
+    },
+    "peerDependencies": {
+        "react": ">=17.0.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.3.11",
+        "@happy-dom/global-registrator": "^20.1.0",
+        "@types/bun": "latest",
+        "@types/react": "^19.2.8",
+        "@types/react-dom": "^19.2.3",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3",
+        "typescript": "^5.9.3"
+    }
+}
