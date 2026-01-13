@@ -1,6 +1,6 @@
 {
     "name": "react-solidlike",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Declarative React control flow components inspired by Solid.js, replacing ternary expressions and array.map() in JSX",
     "type": "module",
     "main": "./dist/index.js",
@@ -17,7 +17,7 @@
         "dist"
     ],
     "scripts": {
-        "build": "NODE_ENV=production bun run build:esm && bun run build:cjs && bun run build:types",
+        "build": "NODE_ENV=production rm -rf dist && bun run build:esm && bun run build:cjs && bun run build:types",
         "build:esm": "bun build ./src/index.ts --outdir ./dist --format esm --external react --external 'react/*'",
         "build:cjs": "bun build ./src/index.ts --outfile ./dist/index.cjs --format cjs --external react --external 'react/*'",
         "build:types": "tsc -p tsconfig.build.json",
