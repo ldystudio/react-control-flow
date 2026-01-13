@@ -1,33 +1,35 @@
 import { Fragment, type Key, type ReactNode } from "react";
 
 export interface ForProps<T> {
-    /** 要遍历的数组 */
+    /** Array to iterate over | 要遍历的数组 */
     each: T[] | readonly T[] | null | undefined;
-    /** 渲染每个元素的函数 */
+    /** Render function for each element | 渲染每个元素的函数 */
     children: (item: T, index: number) => ReactNode;
-    /** 从元素中提取 key 的函数，默认使用索引 */
+    /** Function to extract key from element, defaults to index | 从元素中提取 key 的函数，默认使用索引 */
     keyExtractor?: (item: T, index: number) => Key;
-    /** 数组为空时渲染的备选内容 */
+    /** Fallback content when array is empty | 数组为空时渲染的备选内容 */
     fallback?: ReactNode;
 }
 
 /**
+ * List rendering component, replaces array.map() in JSX
+ *
  * 列表渲染组件，用于替代 JSX 中的 array.map()
  *
  * @example
- * // 基础用法
+ * // Basic usage | 基础用法
  * <For each={items}>
  *   {(item) => <ListItem {...item} />}
  * </For>
  *
  * @example
- * // 带 keyExtractor
+ * // With keyExtractor | 带 keyExtractor
  * <For each={users} keyExtractor={(user) => user.id}>
  *   {(user) => <UserCard user={user} />}
  * </For>
  *
  * @example
- * // 带 fallback
+ * // With fallback | 带 fallback
  * <For each={items} fallback={<EmptyState />}>
  *   {(item, index) => <ListItem key={item.id} item={item} index={index} />}
  * </For>

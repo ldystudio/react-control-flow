@@ -1,7 +1,7 @@
 {
-    "name": "@flickering/react-control-flow",
-    "version": "1.1.0",
-    "description": "声明式 React 控制流组件，用于替代 JSX 中的三元表达式和 array.map()",
+    "name": "react-solidlike",
+    "version": "2.0.0",
+    "description": "Declarative React control flow components inspired by Solid.js, replacing ternary expressions and array.map() in JSX",
     "type": "module",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
@@ -25,10 +25,11 @@
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "format": "biome format --write .",
-        "prepublishOnly": "bun run build"
+        "prepublishOnly": "bun test && bun run build"
     },
     "keywords": [
         "react",
+        "solidjs",
         "control-flow",
         "conditional-rendering",
         "declarative",
@@ -38,7 +39,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ldystudio/react-control-flow.git"
+        "url": "git+https://github.com/ldystudio/react-solidlike.git"
     },
     "peerDependencies": {
         "react": ">=17.0.0"
@@ -46,6 +47,8 @@
     "devDependencies": {
         "@biomejs/biome": "^2.3.11",
         "@happy-dom/global-registrator": "^20.1.0",
+        "@testing-library/react": "^16.3.1",
+        "@testing-library/user-event": "^14.6.1",
         "@types/bun": "latest",
         "@types/react": "^19.2.8",
         "@types/react-dom": "^19.2.3",

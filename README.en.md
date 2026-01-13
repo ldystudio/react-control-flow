@@ -1,68 +1,68 @@
 # react-solidlike
 
-[English](./README.en.md) | 中文
+English | [中文](./README.md)
 
-声明式 React 控制流组件库，灵感来源于 Solid.js。用于替代 JSX 中的三元表达式和 `array.map()`，让你的组件代码更加清晰易读。支持 React 和 React Native。
+Declarative React control flow components inspired by Solid.js. Replaces ternary expressions and `array.map()` in JSX, making your component code cleaner and more readable. Supports React and React Native.
 
-## 安装
+## Installation
 
 ```bash
 npm install react-solidlike
-# 或
+# or
 bun add react-solidlike
 ```
 
-## 组件
+## Components
 
-### `<Show>` - 条件渲染
+### `<Show>` - Conditional Rendering
 
-替代三元表达式进行条件渲染。
+Replace ternary expressions for conditional rendering.
 
 ```tsx
 import { Show } from "react-solidlike";
 
-// 基础用法
+// Basic usage
 <Show when={isLoggedIn}>
   <UserProfile />
 </Show>
 
-// 带 fallback
+// With fallback
 <Show when={isLoggedIn} fallback={<LoginButton />}>
   <UserProfile />
 </Show>
 
-// 使用 render props 获取类型安全的值
+// Using render props for type-safe value access
 <Show when={user}>
   {(user) => <UserProfile name={user.name} />}
 </Show>
 ```
 
-### `<For>` - 列表渲染
+### `<For>` - List Rendering
 
-替代 `array.map()` 进行列表渲染。
+Replace `array.map()` for list rendering.
 
 ```tsx
 import { For } from "react-solidlike";
 
-// 基础用法
+// Basic usage
 <For each={items}>
   {(item) => <ListItem {...item} />}
 </For>
 
-// 带 keyExtractor
+// With keyExtractor
 <For each={users} keyExtractor={(user) => user.id}>
   {(user) => <UserCard user={user} />}
 </For>
 
-// 带 fallback 处理空数组
+// With fallback for empty arrays
 <For each={items} fallback={<EmptyState />}>
   {(item, index) => <ListItem item={item} index={index} />}
 </For>
 ```
 
-### `<Switch>` / `<Match>` / `<Default>` - 多分支渲染
+### `<Switch>` / `<Match>` / `<Default>` - Multi-branch Rendering
 
-替代多个 `if-else` 或 `switch` 语句。
+Replace multiple `if-else` or `switch` statements.
 
 ```tsx
 import { Switch, Match, Default } from "react-solidlike";
@@ -83,19 +83,19 @@ import { Switch, Match, Default } from "react-solidlike";
 </Switch>
 ```
 
-### `<Await>` - 异步等待
+### `<Await>` - Async Rendering
 
-等待 Promise resolve 后渲染内容。
+Wait for Promise to resolve before rendering.
 
 ```tsx
 import { Await } from "react-solidlike";
 
-// 基础用法
+// Basic usage
 <Await promise={fetchUser()} loading={<Spinner />}>
   {(user) => <UserProfile user={user} />}
 </Await>
 
-// 带错误处理
+// With error handling
 <Await
   promise={fetchData()}
   loading={<Loading />}
@@ -104,38 +104,38 @@ import { Await } from "react-solidlike";
   {(data) => <DataView data={data} />}
 </Await>
 
-// 支持非 Promise 值（用于缓存场景）
+// Supports non-Promise values (for caching scenarios)
 <Await promise={cache ?? fetchData()} loading={<Spinner />}>
   {(data) => <DataView data={data} />}
 </Await>
 ```
 
-### `<Repeat>` - 重复渲染
+### `<Repeat>` - Repeat Rendering
 
-替代 `Array.from({ length: n }).map()`。
+Replace `Array.from({ length: n }).map()`.
 
 ```tsx
 import { Repeat } from "react-solidlike";
 
-// 渲染星级评分
+// Render star ratings
 <Repeat times={5}>
   {(i) => <Star key={i} filled={i < rating} />}
 </Repeat>
 
-// 生成骨架屏占位
+// Generate skeleton placeholders
 <Repeat times={3}>
   {(i) => <SkeletonCard key={i} />}
 </Repeat>
 ```
 
-### `<Dynamic>` - 动态组件
+### `<Dynamic>` - Dynamic Component
 
-根据条件动态选择要渲染的组件类型。
+Dynamically select component type based on conditions.
 
 ```tsx
 import { Dynamic } from "react-solidlike";
 
-// 动态选择按钮或链接
+// Dynamic button or link
 <Dynamic
   component={href ? 'a' : 'button'}
   href={href}
@@ -144,13 +144,13 @@ import { Dynamic } from "react-solidlike";
   {label}
 </Dynamic>
 
-// 配合自定义组件
+// With custom components
 <Dynamic
   component={isAdmin ? AdminPanel : UserPanel}
   user={currentUser}
 />
 
-// React Native 中使用
+// React Native usage
 <Dynamic
   component={isPressable ? Pressable : View}
   onPress={handlePress}
@@ -159,19 +159,19 @@ import { Dynamic } from "react-solidlike";
 </Dynamic>
 ```
 
-### `<ErrorBoundary>` - 错误边界
+### `<ErrorBoundary>` - Error Boundary
 
-捕获子组件树中的 JavaScript 错误，防止整个应用崩溃。
+Catch JavaScript errors in child component tree.
 
 ```tsx
 import { ErrorBoundary } from "react-solidlike";
 
-// 基础用法
+// Basic usage
 <ErrorBoundary fallback={<ErrorPage />}>
   <App />
 </ErrorBoundary>
 
-// 使用 render props 获取错误信息和重置函数
+// With render props for error info and reset function
 <ErrorBoundary
   fallback={(error, reset) => (
     <div>
@@ -183,15 +183,15 @@ import { ErrorBoundary } from "react-solidlike";
   <App />
 </ErrorBoundary>
 
-// resetKey 变化时自动重置
+// Auto-reset when resetKey changes
 <ErrorBoundary fallback={<Error />} resetKey={userId}>
   <UserProfile />
 </ErrorBoundary>
 ```
 
-### `<QueryBoundary>` - 查询边界
+### `<QueryBoundary>` - Query Boundary
 
-处理异步查询的各种状态（加载中、错误、空数据、成功）。可与 `@tanstack/react-query`、SWR、RTK Query 等配合使用。
+Handle async query states (loading, error, empty, success). Works with `@tanstack/react-query`, SWR, RTK Query, etc.
 
 ```tsx
 import { QueryBoundary } from "react-solidlike";
@@ -221,28 +221,28 @@ function UserList() {
 
 #### Props
 
-| 属性 | 类型 | 描述 |
-|------|------|------|
-| `query` | `QueryResult<T>` | 查询结果对象 |
-| `loading` | `ReactNode` | 加载中显示 |
-| `error` | `ReactNode` | 错误时显示 |
-| `empty` | `ReactNode` | 空数据显示 |
-| `children` | `ReactNode \| (data: T) => ReactNode` | 成功时渲染 |
-| `isEmptyFn` | `(data: T) => boolean` | 自定义空判断 |
+| Prop | Type | Description |
+|------|------|-------------|
+| `query` | `QueryResult<T>` | Query result object |
+| `loading` | `ReactNode` | Loading state content |
+| `error` | `ReactNode` | Error state content |
+| `empty` | `ReactNode` | Empty state content |
+| `children` | `ReactNode \| (data: T) => ReactNode` | Success content |
+| `isEmptyFn` | `(data: T) => boolean` | Custom empty check |
 
-## 开发
+## Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 bun install
 
-# 运行测试
+# Run tests
 bun test
 
-# 代码检查
+# Lint
 bun run lint
 
-# 构建
+# Build
 bun run build
 ```
 

@@ -1,38 +1,50 @@
 import { Children, type ReactElement, type ReactNode } from "react";
 
 export interface MatchProps<T> {
-    /** 条件表达式 */
+    /** Condition expression | 条件表达式 */
     when: T;
-    /** 条件为真时渲染的内容 */
+    /** Content to render when condition is truthy | 条件为真时渲染的内容 */
     children: ReactNode | ((value: NonNullable<T>) => ReactNode);
 }
 
 export interface DefaultProps {
-    /** 所有 Match 都不匹配时渲染的内容 */
+    /** Content to render when no Match matches | 所有 Match 都不匹配时渲染的内容 */
     children: ReactNode;
 }
 
 export interface SwitchProps {
-    /** Match 和 Default 组件 */
+    /** Match and Default components | Match 和 Default 组件 */
     children: ReactNode;
-    /** 所有条件都不匹配时的备选内容（也可用 Default 组件） */
+    /** Fallback content when no conditions match (can also use Default component) | 所有条件都不匹配时的备选内容（也可用 Default 组件） */
     fallback?: ReactNode;
 }
 
 /**
+ * Condition match component, used with Switch
+ *
  * 条件匹配组件，配合 Switch 使用
+ *
+ * Note: Match component cannot be used alone, must be a child of Switch
+ *
  * 注意：Match 组件不能单独使用，必须作为 Switch 的子组件
  */
 export function Match<T>(_props: MatchProps<T>): ReactElement | null {
+    // Match component doesn't render itself, handled by Switch
     // Match 组件本身不渲染，由 Switch 处理
     return null;
 }
 
 /**
+ * Default match component, used with Switch
+ *
  * 默认匹配组件，配合 Switch 使用
+ *
+ * Renders when no Match matches
+ *
  * 当所有 Match 都不匹配时渲染
  */
 export function Default(_props: DefaultProps): ReactElement | null {
+    // Default component doesn't render itself, handled by Switch
     // Default 组件本身不渲染，由 Switch 处理
     return null;
 }
@@ -72,10 +84,12 @@ function isDefaultElement(child: ReactNode): child is DefaultElement {
 }
 
 /**
+ * Multi-condition branch component, replaces nested if-else if-else
+ *
  * 多条件分支组件，用于替代嵌套的 if-else if-else
  *
  * @example
- * // 基础用法
+ * // Basic usage | 基础用法
  * <Switch>
  *   <Match when={status === 'loading'}>
  *     <Loading />
@@ -92,7 +106,7 @@ function isDefaultElement(child: ReactNode): child is DefaultElement {
  * </Switch>
  *
  * @example
- * // 使用 render props 获取类型安全的值
+ * // Using render props for type-safe value access | 使用 render props 获取类型安全的值
  * <Switch>
  *   <Match when={user}>
  *     {(user) => <UserProfile name={user.name} />}
@@ -103,7 +117,7 @@ function isDefaultElement(child: ReactNode): child is DefaultElement {
  * </Switch>
  *
  * @example
- * // 使用 fallback 属性
+ * // Using fallback prop | 使用 fallback 属性
  * <Switch fallback={<NotFound />}>
  *   <Match when={page === 'home'}><Home /></Match>
  *   <Match when={page === 'about'}><About /></Match>
