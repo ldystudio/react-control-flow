@@ -21,13 +21,4 @@ export default defineConfig([
         },
         plugins: [removeCommentsPlugin],
     },
-    {
-        input: 'src/index.ts',
-        external: ['react', /^react\//],
-        output: {
-            file: 'dist/index.cjs',
-            format: 'cjs',
-        },
-        plugins: [removeCommentsPlugin],
-    },
 ]);
