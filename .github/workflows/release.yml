@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Check version change
         id: version
@@ -50,6 +50,20 @@ jobs:
           git tag -a "$VERSION" -m "Release $VERSION"
           git push origin "$VERSION"
 
+          # 获取上一个 tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+
+          # 生成 changelog 写入文件
+          echo "## What's Changed" > /tmp/notes.md
+          if [ -n "$PREV_TAG" ]; then
+            git log --pretty=format:"- %s (%h)" "$PREV_TAG"..HEAD >> /tmp/notes.md
+            echo "" >> /tmp/notes.md
+            echo "" >> /tmp/notes.md
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREV_TAG...$VERSION" >> /tmp/notes.md
+          else
+            git log --pretty=format:"- %s (%h)" >> /tmp/notes.md
+          fi
+
           gh release create "$VERSION" \
             --title "$VERSION" \
-            --generate-notes
+            --notes-file /tmp/notes.md
