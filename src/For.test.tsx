@@ -380,4 +380,182 @@ describe("For 组件", () => {
             expect(html).toContain('class="inner"');
         });
     });
+
+    describe("reverse 功能", () => {
+        test("倒序渲染数组元素", () => {
+            const items = ["a", "b", "c"];
+            const html = renderToString(
+                <For each={items} reverse>
+                    {(item) => <span>{item}</span>}
+                </For>
+            );
+            expect(html).toBe("<span>c</span><span>b</span><span>a</span>");
+        });
+
+        test("reverse 时 index 保持原数组位置", () => {
+            const items = ["first", "second", "third"];
+            const results: Array<{ item: string; index: number }> = [];
+            renderToString(
+                <For each={items} reverse>
+                    {(item, index) => {
+                        results.push({ item, index });
+                        return (
+                            <span>
+                                {item}-{index}
+                            </span>
+                        );
+                    }}
+                </For>
+            );
+            expect(results).toEqual([
+                { item: "third", index: 2 },
+                { item: "second", index: 1 },
+                { item: "first", index: 0 },
+            ]);
+        });
+
+        test("reverse 为 false 时正常顺序", () => {
+            const items = [1, 2, 3];
+            const html = renderToString(
+                <For each={items} reverse={false}>
+                    {(item) => <span>{item}</span>}
+                </For>
+            );
+            expect(html).toBe("<span>1</span><span>2</span><span>3</span>");
+        });
+
+        test("reverse 与 keyExtractor 配合使用", () => {
+            const users = [
+                { id: "a", name: "Alice" },
+                { id: "b", name: "Bob" },
+                { id: "c", name: "Carol" },
+            ];
+            const html = renderToString(
+                <For each={users} reverse keyExtractor={(u) => u.id}>
+                    {(user) => <div>{user.name}</div>}
+                </For>
+            );
+            // 倒序：Carol, Bob, Alice
+            expect(html).toBe("<div>Carol</div><div>Bob</div><div>Alice</div>");
+        });
+
+        test("reverse 与 wrapper 配合使用", () => {
+            const items = ["x", "y", "z"];
+            const html = renderToString(
+                <For each={items} reverse wrapper={<ul className="reversed-list" />}>
+                    {(item) => <li>{item}</li>}
+                </For>
+            );
+            expect(html).toContain('class="reversed-list"');
+            expect(html).toBe('<ul class="reversed-list"><li>z</li><li>y</li><li>x</li></ul>');
+        });
+
+        test("空数组时 reverse 不影响 fallback", () => {
+            const html = renderToString(
+                <For each={[] as string[]} reverse fallback={<div>Empty</div>}>
+                    {(item) => <span>{item}</span>}
+                </For>
+            );
+            expect(html).toContain("Empty");
+        });
+
+        test("reverse 不修改原数组", () => {
+            const original = [1, 2, 3];
+            const copy = [...original];
+            renderToString(
+                <For each={original} reverse>
+                    {(item) => <span>{item}</span>}
+                </For>
+            );
+            expect(original).toEqual(copy);
+        });
+    });
+
+    describe("children array 参数", () => {
+        test("传递原数组给 children", () => {
+            const items = ["a", "b", "c"];
+            let receivedArray: string[] | readonly string[] | undefined;
+            renderToString(
+                <For each={items}>
+                    {(item, _index, array) => {
+                        receivedArray = array;
+                        return <span>{item}</span>;
+                    }}
+                </For>
+            );
+            expect(receivedArray).toBe(items);
+        });
+
+        test("使用 array 判断首尾元素", () => {
+            const items = ["first", "middle", "last"];
+            const html = renderToString(
+                <For each={items}>
+                    {(item, index, array) => (
+                        <span>
+                            {index === 0 ? "[start]" : ""}
+                            {item}
+                            {index === array.length - 1 ? "[end]" : ""}
+                        </span>
+                    )}
+                </For>
+            );
+            expect(html).toContain("[start]");
+            expect(html).toContain("first");
+            expect(html).toContain("[end]");
+            expect(html).toContain("last");
+        });
+
+        test("array 与 reverse 配合使用时传递原数组", () => {
+            const items = [1, 2, 3];
+            const results: Array<{ item: number; index: number; arrayLength: number }> = [];
+            renderToString(
+                <For each={items} reverse>
+                    {(item, index, array) => {
+                        results.push({ item, index, arrayLength: array.length });
+                        return <span>{item}</span>;
+                    }}
+                </For>
+            );
+            expect(results).toEqual([
+                { item: 3, index: 2, arrayLength: 3 },
+                { item: 2, index: 1, arrayLength: 3 },
+                { item: 1, index: 0, arrayLength: 3 },
+            ]);
+        });
+
+        test("显示项目位置信息", () => {
+            const items = ["A", "B", "C", "D"];
+            const html = renderToString(
+                <For each={items}>
+                    {(item, index, array) => (
+                        <div>
+                            {item} ({index + 1}/{array.length})
+                        </div>
+                    )}
+                </For>
+            );
+            expect(html).toContain("A");
+            expect(html).toContain("1");
+            expect(html).toContain("4");
+        });
+
+        test("使用 array 计算相邻元素", () => {
+            const numbers = [10, 20, 30];
+            const results: Array<{ num: number; next: number | undefined }> = [];
+            renderToString(
+                <For each={numbers}>
+                    {(num, index, array) => {
+                        const next = array[index + 1];
+                        results.push({ num, next });
+                        return <span>{num}</span>;
+                    }}
+                </For>
+            );
+            expect(results).toEqual([
+                { num: 10, next: 20 },
+                { num: 20, next: 30 },
+                { num: 30, next: undefined },
+            ]);
+        });
+    });
 });

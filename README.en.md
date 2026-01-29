@@ -63,6 +63,22 @@ import { For } from "react-solidlike";
 <For each={items} wrapper={<ul className="list" />}>
   {(item) => <li>{item.name}</li>}
 </For>
+
+// Reverse rendering
+<For each={messages} reverse>
+  {(msg) => <Message {...msg} />}
+</For>
+
+// Using array parameter for context
+<For each={steps}>
+  {(step, index, array) => (
+    <Step
+      data={step}
+      isFirst={index === 0}
+      isLast={index === array.length - 1}
+    />
+  )}
+</For>
 ```
 
 ### `<Switch>` / `<Match>` / `<Default>` - Multi-branch Rendering
@@ -135,6 +151,18 @@ import { Repeat } from "react-solidlike";
 // With wrapper element
 <Repeat times={5} wrapper={<div className="stars" />}>
   {(i) => <Star key={i} />}
+</Repeat>
+
+// Reverse rendering
+<Repeat times={5} reverse>
+  {(i) => <div key={i}>Reversed {i}</div>}
+</Repeat>
+
+// Using length parameter for progress
+<Repeat times={totalSteps}>
+  {(i, length) => (
+    <Step key={i} current={i + 1} total={length} />
+  )}
 </Repeat>
 ```
 

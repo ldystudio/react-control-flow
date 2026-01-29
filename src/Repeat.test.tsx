@@ -212,4 +212,128 @@ describe("Repeat 组件", () => {
             expect(html).toContain('class="inner"');
         });
     });
+
+    describe("reverse 功能", () => {
+        test("倒序渲染索引", () => {
+            const indices: number[] = [];
+            renderToString(
+                <Repeat times={5} reverse>
+                    {(i) => {
+                        indices.push(i);
+                        return <span key={i}>{i}</span>;
+                    }}
+                </Repeat>
+            );
+            expect(indices).toEqual([4, 3, 2, 1, 0]);
+        });
+
+        test("reverse 为 false 时正常顺序", () => {
+            const indices: number[] = [];
+            renderToString(
+                <Repeat times={3} reverse={false}>
+                    {(i) => {
+                        indices.push(i);
+                        return <span key={i}>{i}</span>;
+                    }}
+                </Repeat>
+            );
+            expect(indices).toEqual([0, 1, 2]);
+        });
+
+        test("reverse 与 wrapper 配合使用", () => {
+            const html = renderToString(
+                <Repeat times={3} reverse wrapper={<div className="reversed" />}>
+                    {(i) => <span key={i}>{i}</span>}
+                </Repeat>
+            );
+            expect(html).toContain('class="reversed"');
+            // 检查渲染顺序：2, 1, 0
+            expect(html).toBe('<div class="reversed"><span>2</span><span>1</span><span>0</span></div>');
+        });
+
+        test("times 为 0 时 reverse 不影响结果", () => {
+            const html = renderToString(
+                <Repeat times={0} reverse>
+                    {(i) => <span key={i}>{i}</span>}
+                </Repeat>
+            );
+            expect(html).toBe("");
+        });
+
+        test("times 为 1 时 reverse 不影响结果", () => {
+            const indices: number[] = [];
+            renderToString(
+                <Repeat times={1} reverse>
+                    {(i) => {
+                        indices.push(i);
+                        return <span key={i}>{i}</span>;
+                    }}
+                </Repeat>
+            );
+            expect(indices).toEqual([0]);
+        });
+    });
+
+    describe("children length 参数", () => {
+        test("传递正确的 length 给 children", () => {
+            const lengths: number[] = [];
+            renderToString(
+                <Repeat times={3}>
+                    {(i, length) => {
+                        lengths.push(length);
+                        return <span key={i}>{length}</span>;
+                    }}
+                </Repeat>
+            );
+            expect(lengths).toEqual([3, 3, 3]);
+        });
+
+        test("使用 length 判断首尾元素", () => {
+            const html = renderToString(
+                <Repeat times={4}>
+                    {(i, length) => <span key={i}>{i === 0 ? "first" : i === length - 1 ? "last" : "middle"}</span>}
+                </Repeat>
+            );
+            expect(html).toContain("first");
+            expect(html).toContain("last");
+            const middles = html.match(/middle/g);
+            expect(middles?.length).toBe(2);
+        });
+
+        test("length 与 reverse 配合使用", () => {
+            const results: Array<{ index: number; length: number }> = [];
+            renderToString(
+                <Repeat times={3} reverse>
+                    {(i, length) => {
+                        results.push({ index: i, length });
+                        return (
+                            <span key={i}>
+                                {i}/{length}
+                            </span>
+                        );
+                    }}
+                </Repeat>
+            );
+            expect(results).toEqual([
+                { index: 2, length: 3 },
+                { index: 1, length: 3 },
+                { index: 0, length: 3 },
+            ]);
+        });
+
+        test("显示进度指示器", () => {
+            const html = renderToString(
+                <Repeat times={5}>
+                    {(i, length) => (
+                        <div key={i}>
+                            Step {i + 1} of {length}
+                        </div>
+                    )}
+                </Repeat>
+            );
+            expect(html).toContain("Step");
+            expect(html).toContain("1");
+            expect(html).toContain("5");
+        });
+    });
 });

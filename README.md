@@ -63,6 +63,22 @@ import { For } from "react-solidlike";
 <For each={items} wrapper={<ul className="list" />}>
   {(item) => <li>{item.name}</li>}
 </For>
+
+// 倒序渲染
+<For each={messages} reverse>
+  {(msg) => <Message {...msg} />}
+</For>
+
+// 使用 array 参数获取上下文信息
+<For each={steps}>
+  {(step, index, array) => (
+    <Step
+      data={step}
+      isFirst={index === 0}
+      isLast={index === array.length - 1}
+    />
+  )}
+</For>
 ```
 
 ### `<Switch>` / `<Match>` / `<Default>` - 多分支渲染
@@ -135,6 +151,18 @@ import { Repeat } from "react-solidlike";
 // 使用 wrapper 包装元素
 <Repeat times={5} wrapper={<div className="stars" />}>
   {(i) => <Star key={i} />}
+</Repeat>
+
+// 倒序渲染
+<Repeat times={5} reverse>
+  {(i) => <div key={i}>倒序 {i}</div>}
+</Repeat>
+
+// 使用 length 参数显示进度
+<Repeat times={totalSteps}>
+  {(i, length) => (
+    <Step key={i} current={i + 1} total={length} />
+  )}
 </Repeat>
 ```
 
