@@ -1,14 +1,9 @@
-import { cloneElement, Fragment, isValidElement, type ReactElement, type ReactNode } from "react";
+import type { ReactNode } from 'react';
+import { For, type ForProps } from './For';
 
-export interface RepeatProps {
+export interface RepeatProps extends Omit<ForProps<number>, 'each'> {
     /** Number of times to repeat | 重复次数 */
     times: number;
-    /** Render function, receives current index and total length | 渲染函数，接收当前索引和总长度 */
-    children: (index: number, length: number) => ReactNode;
-    /** Wrapper element for all rendered elements | 包装所有渲染元素的元素 */
-    wrapper?: ReactElement;
-    /** Reverse the rendering order | 倒序渲染 */
-    reverse?: boolean;
 }
 
 /**
@@ -40,21 +35,12 @@ export interface RepeatProps {
  *   {(i) => <Star key={i} />}
  * </Repeat>
  */
-export function Repeat({ times, children, wrapper, reverse }: RepeatProps): ReactNode {
-    if (times <= 0) {
-        return null;
-    }
+export function Repeat({ times, children, ...props }: RepeatProps): ReactNode {
+    const indices = times > 0 ? Array.from({ length: times }, (_, i) => i) : [];
 
-    const elements: ReactNode[] = [];
-    if (reverse) {
-        for (let i = times - 1; i >= 0; i--) {
-            elements.push(<Fragment key={i}>{children(i, times)}</Fragment>);
-        }
-    } else {
-        for (let i = 0; i < times; i++) {
-            elements.push(<Fragment key={i}>{children(i, times)}</Fragment>);
-        }
-    }
-
-    return wrapper && isValidElement(wrapper) ? cloneElement(wrapper, {}, elements) : elements;
+    return (
+        <For {...props} each={indices}>
+            {(i, _i, array) => children(i, array.length, array)}
+        </For>
+    );
 }

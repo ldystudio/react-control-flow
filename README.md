@@ -166,6 +166,48 @@ import { Repeat } from "react-solidlike";
 </Repeat>
 ```
 
+### `<Split>` - 字符串切割渲染
+
+按分隔符切割字符串并渲染每个部分。
+
+```tsx
+import { Split } from "react-solidlike";
+
+// 基础用法 - 切割后不保留分隔符
+<Split string="a,b,c" separator=",">
+  {(part) => <span>{part}</span>}
+</Split>
+// 渲染: ["a", "b", "c"]
+
+// 保留分隔符
+<Split string="9+5=(9+1)+4" separator="=" keepSeparator>
+  {(part) => <span>{part}</span>}
+</Split>
+// 渲染: ["9+5", "=", "(9+1)+4"]
+
+// 使用正则表达式分隔符
+<Split string="a1b2c3" separator={/\d/} keepSeparator>
+  {(part) => <span>{part}</span>}
+</Split>
+// 渲染: ["a", "1", "b", "2", "c", "3"]
+
+// 带 wrapper 包装元素
+<Split string="hello world" separator=" " wrapper={<div className="words" />}>
+  {(word) => <span>{word}</span>}
+</Split>
+
+// 带 fallback 处理空字符串
+<Split string={text} separator="," fallback={<EmptyState />}>
+  {(part) => <Tag>{part}</Tag>}
+</Split>
+
+// 倒序渲染
+<Split string="a,b,c" separator="," reverse>
+  {(part) => <span>{part}</span>}
+</Split>
+// 渲染顺序: ["c", "b", "a"]
+```
+
 ### `<Dynamic>` - 动态组件
 
 根据条件动态选择要渲染的组件类型。

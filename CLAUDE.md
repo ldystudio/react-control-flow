@@ -39,16 +39,17 @@ bun run build
 
 All components are in `src/` with co-located test files (`*.test.tsx`):
 
-| Component | Purpose |
-|-----------|---------|
-| `Show` | Conditional rendering (replaces ternary) |
-| `For` | List rendering (replaces `array.map()`) |
-| `Repeat` | Repeat rendering (replaces `Array.from({ length }).map()`) |
-| `Switch/Match/Default` | Multi-branch rendering |
-| `Await` | Async promise handling |
-| `Dynamic` | Dynamic component selection |
-| `ErrorBoundary` | Error catching |
-| `QueryBoundary` | Query state handling (loading/error/empty/success) |
+| Component              | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `Show`                 | Conditional rendering (replaces ternary)                   |
+| `For`                  | List rendering (replaces `array.map()`)                    |
+| `Repeat`               | Repeat rendering (replaces `Array.from({ length }).map()`) |
+| `Split`                | String split rendering (split string and render each part) |
+| `Switch/Match/Default` | Multi-branch rendering                                     |
+| `Await`                | Async promise handling                                     |
+| `Dynamic`              | Dynamic component selection                                |
+| `ErrorBoundary`        | Error catching                                             |
+| `QueryBoundary`        | Query state handling (loading/error/empty/success)         |
 
 Each component exports its Props interface alongside the component. All exports are aggregated in `src/index.ts`.
 

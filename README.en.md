@@ -166,6 +166,48 @@ import { Repeat } from "react-solidlike";
 </Repeat>
 ```
 
+### `<Split>` - String Split Rendering
+
+Split a string by separator and render each part.
+
+```tsx
+import { Split } from "react-solidlike";
+
+// Basic usage - splits without keeping separator
+<Split string="a,b,c" separator=",">
+  {(part) => <span>{part}</span>}
+</Split>
+// Renders: ["a", "b", "c"]
+
+// Keep separator in result
+<Split string="9+5=(9+1)+4" separator="=" keepSeparator>
+  {(part) => <span>{part}</span>}
+</Split>
+// Renders: ["9+5", "=", "(9+1)+4"]
+
+// Using RegExp separator
+<Split string="a1b2c3" separator={/\d/} keepSeparator>
+  {(part) => <span>{part}</span>}
+</Split>
+// Renders: ["a", "1", "b", "2", "c", "3"]
+
+// With wrapper element
+<Split string="hello world" separator=" " wrapper={<div className="words" />}>
+  {(word) => <span>{word}</span>}
+</Split>
+
+// With fallback for empty string
+<Split string={text} separator="," fallback={<EmptyState />}>
+  {(part) => <Tag>{part}</Tag>}
+</Split>
+
+// Reverse rendering
+<Split string="a,b,c" separator="," reverse>
+  {(part) => <span>{part}</span>}
+</Split>
+// Render order: ["c", "b", "a"]
+```
+
 ### `<Dynamic>` - Dynamic Component
 
 Dynamically select component type based on conditions.

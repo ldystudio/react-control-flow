@@ -5,4 +5,5 @@ export { For, type ForProps } from "./For";
 export { QueryBoundary, type QueryBoundaryProps, type QueryResult } from "./QueryBoundary";
 export { Repeat, type RepeatProps } from "./Repeat";
 export { Show, type ShowProps } from "./Show";
+export { Split, type SplitProps } from "./Split";
 export { Default, type DefaultProps, Match, type MatchProps, Switch, type SwitchProps } from "./Switch";
