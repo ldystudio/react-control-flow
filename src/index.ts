@@ -1,9 +1,12 @@
 export { Await, type AwaitProps } from "./Await";
+export { ClientOnly, type ClientOnlyProps } from "./ClientOnly";
 export { Dynamic, type DynamicProps } from "./Dynamic";
 export { ErrorBoundary, type ErrorBoundaryProps } from "./ErrorBoundary";
 export { For, type ForProps } from "./For";
+export { Once, type OnceProps } from "./Once";
 export { QueryBoundary, type QueryBoundaryProps, type QueryResult } from "./QueryBoundary";
 export { Repeat, type RepeatProps } from "./Repeat";
 export { Show, type ShowProps } from "./Show";
 export { Split, type SplitProps } from "./Split";
 export { Default, type DefaultProps, Match, type MatchProps, Switch, type SwitchProps } from "./Switch";
+export { Visible, type VisibleProps } from "./Visible";

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, mock, test } from "bun:test";
 import { renderToString } from "react-dom/server";
 import { Show } from "./Show";
 
@@ -323,6 +323,59 @@ describe("Show 组件", () => {
         test("支持文本节点", () => {
             const html = renderToString(<Show when={true}>plain text</Show>);
             expect(html).toContain("plain text");
+        });
+    });
+
+    describe("onFallback 回调", () => {
+        test("条件为假时调用 onFallback", () => {
+            const onFallback = mock(() => {});
+            renderToString(
+                <Show when={false} onFallback={onFallback}>
+                    <span>content</span>
+                </Show>
+            );
+            expect(onFallback).toHaveBeenCalledTimes(1);
+        });
+
+        test("条件为真时不调用 onFallback", () => {
+            const onFallback = mock(() => {});
+            renderToString(
+                <Show when={true} onFallback={onFallback}>
+                    <span>content</span>
+                </Show>
+            );
+            expect(onFallback).not.toHaveBeenCalled();
+        });
+
+        test("onFallback 与 fallback 同时使用", () => {
+            const onFallback = mock(() => {});
+            const html = renderToString(
+                <Show when={false} fallback={<span>Fallback</span>} onFallback={onFallback}>
+                    <span>content</span>
+                </Show>
+            );
+            expect(onFallback).toHaveBeenCalledTimes(1);
+            expect(html).toContain("Fallback");
+        });
+
+        test("空数组时调用 onFallback", () => {
+            const onFallback = mock(() => {});
+            renderToString(
+                <Show when={[]} onFallback={onFallback}>
+                    <span>content</span>
+                </Show>
+            );
+            expect(onFallback).toHaveBeenCalledTimes(1);
+        });
+
+        test("空对象时调用 onFallback", () => {
+            const onFallback = mock(() => {});
+            renderToString(
+                <Show when={{}} onFallback={onFallback}>
+                    <span>content</span>
+                </Show>
+            );
+            expect(onFallback).toHaveBeenCalledTimes(1);
         });
     });
 });

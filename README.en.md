@@ -35,6 +35,11 @@ import { Show } from "react-solidlike";
 <Show when={user}>
   {(user) => <UserProfile name={user.name} />}
 </Show>
+
+// With onFallback callback (for redirects and other side effects)
+<Show when={isAuthenticated} fallback={<Loading />} onFallback={() => navigate('/login')}>
+  <Dashboard />
+</Show>
 ```
 
 ### `<For>` - List Rendering
@@ -309,6 +314,88 @@ function UserList() {
 | `empty` | `ReactNode` | Empty state content |
 | `children` | `ReactNode \| (data: T) => ReactNode` | Success content |
 | `isEmptyFn` | `(data: T) => boolean` | Custom empty check |
+
+### `<Once>` - Single Render
+
+Renders children only once and ignores subsequent updates. Useful for expensive computations or content that shouldn't re-render.
+
+```tsx
+import { Once } from "react-solidlike";
+
+// Render expensive component once
+<Once>
+  <ExpensiveChart data={data} />
+</Once>
+
+// Prevent re-renders from parent updates
+function Parent() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      <Once>
+        <Child initialCount={count} />
+      </Once>
+    </div>
+  );
+}
+```
+
+### `<ClientOnly>` - Client-side Only Rendering
+
+Renders children only on the client side (after hydration). Useful for components that rely on browser APIs or need to avoid SSR hydration mismatches.
+
+```tsx
+import { ClientOnly } from "react-solidlike";
+
+// Basic usage
+<ClientOnly>
+  <BrowserOnlyComponent />
+</ClientOnly>
+
+// With SSR fallback
+<ClientOnly fallback={<Skeleton />}>
+  <DynamicChart />
+</ClientOnly>
+
+// Using render function for lazy evaluation (avoid accessing window)
+<ClientOnly fallback={<Loading />}>
+  {() => <ComponentUsingWindow width={window.innerWidth} />}
+</ClientOnly>
+
+// Avoid hydration mismatch
+<ClientOnly fallback={<span>--:--</span>}>
+  <CurrentTime />
+</ClientOnly>
+```
+
+### `<Visible>` - Visibility-based Rendering (Web only)
+
+Renders children when entering viewport using IntersectionObserver. In React Native or unsupported environments, children are rendered directly (graceful degradation).
+
+```tsx
+import { Visible } from "react-solidlike";
+
+// Basic usage - render when entering viewport
+<Visible>
+  <HeavyComponent />
+</Visible>
+
+// With placeholder
+<Visible fallback={<Skeleton />}>
+  <Image src={url} />
+</Visible>
+
+// Preload before entering viewport (rootMargin)
+<Visible rootMargin="200px" fallback={<Placeholder />}>
+  <LazyImage />
+</Visible>
+
+// Toggle visibility (once=false unmounts when leaving viewport)
+<Visible once={false} onVisibilityChange={(v) => console.log(v)}>
+  <VideoPlayer />
+</Visible>
+```
 
 ## Development
 

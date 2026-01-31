@@ -35,6 +35,11 @@ import { Show } from "react-solidlike";
 <Show when={user}>
   {(user) => <UserProfile name={user.name} />}
 </Show>
+
+// 带 onFallback 回调（用于重定向等副作用）
+<Show when={isAuthenticated} fallback={<Loading />} onFallback={() => navigate('/login')}>
+  <Dashboard />
+</Show>
 ```
 
 ### `<For>` - 列表渲染
@@ -309,6 +314,88 @@ function UserList() {
 | `empty` | `ReactNode` | 空数据显示 |
 | `children` | `ReactNode \| (data: T) => ReactNode` | 成功时渲染 |
 | `isEmptyFn` | `(data: T) => boolean` | 自定义空判断 |
+
+### `<Once>` - 单次渲染
+
+只渲染一次子元素，忽略后续更新。适用于昂贵的计算或不应重新渲染的内容。
+
+```tsx
+import { Once } from "react-solidlike";
+
+// 渲染昂贵的组件
+<Once>
+  <ExpensiveChart data={data} />
+</Once>
+
+// 防止父组件更新导致的重新渲染
+function Parent() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      <Once>
+        <Child initialCount={count} />
+      </Once>
+    </div>
+  );
+}
+```
+
+### `<ClientOnly>` - 仅客户端渲染
+
+仅在客户端（hydration 之后）渲染子元素。适用于依赖浏览器 API 或需要避免 SSR hydration 不匹配的场景。
+
+```tsx
+import { ClientOnly } from "react-solidlike";
+
+// 基础用法
+<ClientOnly>
+  <BrowserOnlyComponent />
+</ClientOnly>
+
+// 带 SSR 备选内容
+<ClientOnly fallback={<Skeleton />}>
+  <DynamicChart />
+</ClientOnly>
+
+// 使用渲染函数延迟求值（避免访问 window）
+<ClientOnly fallback={<Loading />}>
+  {() => <ComponentUsingWindow width={window.innerWidth} />}
+</ClientOnly>
+
+// 避免 hydration 不匹配
+<ClientOnly fallback={<span>--:--</span>}>
+  <CurrentTime />
+</ClientOnly>
+```
+
+### `<Visible>` - 可见性渲染（仅 Web）
+
+基于 IntersectionObserver 的可见性渲染，进入视口才渲染。在 React Native 或不支持的环境中会直接渲染 children（优雅降级）。
+
+```tsx
+import { Visible } from "react-solidlike";
+
+// 基础用法 - 进入视口时渲染
+<Visible>
+  <HeavyComponent />
+</Visible>
+
+// 带占位符
+<Visible fallback={<Skeleton />}>
+  <Image src={url} />
+</Visible>
+
+// 提前预加载（rootMargin）
+<Visible rootMargin="200px" fallback={<Placeholder />}>
+  <LazyImage />
+</Visible>
+
+// 切换可见性（once=false 时离开视口会卸载）
+<Visible once={false} onVisibilityChange={(v) => console.log(v)}>
+  <VideoPlayer />
+</Visible>
+```
 
 ## 开发
 

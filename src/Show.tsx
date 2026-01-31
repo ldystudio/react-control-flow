@@ -7,6 +7,8 @@ export interface ShowProps<T> {
     children: ReactNode | ((value: NonNullable<T>) => ReactNode);
     /** Fallback content when condition is falsy | 条件为假时渲染的备选内容 */
     fallback?: ReactNode;
+    /** Callback when condition is falsy (called before rendering fallback) | 条件为假时的回调（在渲染 fallback 之前调用） */
+    onFallback?: () => void;
 }
 
 /**
@@ -31,9 +33,16 @@ export interface ShowProps<T> {
  * <Show when={user}>
  *   {(user) => <UserProfile name={user.name} />}
  * </Show>
+ *
+ * @example
+ * // With onFallback callback for side effects | 带 onFallback 回调用于副作用
+ * <Show when={isAuthenticated} fallback={<Loading />} onFallback={() => navigate('/login')}>
+ *   <Dashboard />
+ * </Show>
  */
-export function Show<T>({ when, children, fallback = null }: ShowProps<T>): ReactNode {
+export function Show<T>({ when, children, fallback = null, onFallback }: ShowProps<T>): ReactNode {
     if (!when || isEmpty(when)) {
+        onFallback?.();
         return fallback;
     }
 
